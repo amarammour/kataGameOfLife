@@ -10,8 +10,11 @@
     <input matInput placeholder="Cols" [(ngModel)]="columnCount">
   </mat-form-field>
 
-  <button mat-raised-button color="primary" (click)="start()">START</button>
-  <button mat-raised-button color="primary" (click)="toggle()">PAUSE</button>
+  <button mat-raised-button color="primary" (click)="start()">CREATE</button>
+  <button mat-raised-button color="primary" (click)="toggle()">
+    <span *ngIf="gameRunning">PAUSE</span>
+    <span *ngIf="!gameRunning">RUN</span>
+  </button>
   <button mat-raised-button color="primary" (click)="stop()">RESET</button>
 
 </div>
@@ -25,3 +28,5 @@
    </div>
  </div>
 </div>
+
+<mat-progress-bar *ngIf="gameRunning" color="accent" mode="buffer"></mat-progress-bar>

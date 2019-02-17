@@ -1,6 +1,5 @@
 import {Observer} from 'rxjs';
 import {CellState} from './cell-state';
-import Timer = NodeJS.Timer;
 
 export class GameOfLife {
 
@@ -9,7 +8,7 @@ export class GameOfLife {
   private static DEFAULT_RUNNING_SPEED = 500;
 
 
-  private timerId: Timer;
+  private timerId: any;
   private isRunning: boolean;
   private readonly matrix: number [][];
 

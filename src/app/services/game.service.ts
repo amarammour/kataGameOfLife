@@ -9,6 +9,7 @@ import {root} from 'rxjs/internal-compatibility';
 export class GameService {
 
   private game: GameOfLife;
+  gameRunning : Subject<boolean> = new Subject<boolean>();
 
   dataObserver: Observer<number[][]> = {
     next: x => this.matrix$.next(x),
@@ -27,7 +28,7 @@ export class GameService {
 
   private initGame(row: number = null, col: number = null) {
     this.game = new GameOfLife(row, col, this.dataObserver);
-
+    this.notifyGameRunning();
   }
 
   startGame(row: number, col: number) {
@@ -40,14 +41,21 @@ export class GameService {
 
   stop() {
     this.game.reset();
+    this.notifyGameRunning();
+  }
+
+  notifyGameRunning(){
+    this.gameRunning.next(this.game.isGameRunning);
   }
 
   toggle() {
     this.game.toggle();
+    this.notifyGameRunning();
   }
 
   reset() {
     this.game.reset();
+    this.notifyGameRunning();
   }
 
 }

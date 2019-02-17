@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatInputModule } from '@angular/material/input';
-import {MatButtonModule} from '@angular/material';
+import {MatInputModule, MatButtonModule, MatProgressBarModule} from '@angular/material';
 import {FormsModule} from '@angular/forms';
 @NgModule({
   declarations: [],
@@ -9,11 +8,13 @@ import {FormsModule} from '@angular/forms';
     FormsModule,
     MatInputModule,
     MatButtonModule,
+    MatProgressBarModule
   ],
   exports : [
     FormsModule,
     MatInputModule,
     MatButtonModule,
+    MatProgressBarModule
   ]
 })
 export class SharedModule { }

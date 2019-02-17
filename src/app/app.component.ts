@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {GameService} from './services/game.service';
-import {Subscription} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import {CellState} from './models/cell-state';
 
 @Component({
@@ -12,8 +12,10 @@ export class AppComponent implements OnInit, OnDestroy {
   title = 'kata-game-of-life';
   matrix: number [][];
   subscription: Subscription;
+  runningSubscription: Subscription;
   rowCount: number;
   columnCount: number;
+  gameRunning: boolean;
 
   cellState = CellState;
 
@@ -33,6 +35,18 @@ export class AppComponent implements OnInit, OnDestroy {
         console.error(error);
       }
     );
+
+
+    this.runningSubscription = this.gameService.gameRunning.subscribe(
+      (data) => {
+        this.gameRunning = data;
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+
+
   }
 
   toggle() {
@@ -55,6 +69,9 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.subscription) {
       this.subscription.unsubscribe();
+    }
+    if (this.runningSubscription) {
+      this.runningSubscription.unsubscribe();
     }
   }
 
