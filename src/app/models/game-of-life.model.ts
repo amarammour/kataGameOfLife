@@ -1,5 +1,6 @@
 import {Observer} from 'rxjs';
 import {CellState} from './cell-state';
+import Timer = NodeJS.Timer;
 
 export class GameOfLife {
 
@@ -8,7 +9,7 @@ export class GameOfLife {
   private static DEFAULT_RUNNING_SPEED = 500;
 
 
-  private timerId: number;
+  private timerId: Timer;
   private isRunning: boolean;
   private readonly matrix: number [][];
 
@@ -145,11 +146,12 @@ export class GameOfLife {
 
     for (let row = 0; row < this.rowCount; row++) {
       for (let col = 0; col < this.colCount; col++) {
-
+        // console.log(` next step : ${row} : ${col}`);
         //   1. Any live cell with fewer than two live neighbours dies, as if caused by underpopulation.
         //    2. Any live cell with more than three live neighbours dies, as if by overcrowding.
         //    3. Any live cell with two or three live neighbours lives on to the next generation.
         const lNeighbours = this.cellLivingNeighbours(row, col);
+        // console.log(` next step 2: ${row} : ${col}`);
         if (this.isLiveCell(row, col) && (lNeighbours < 2 || lNeighbours > 3)) {
           this.setCellState(row, col, CellState.DEAD);
         }
@@ -162,8 +164,6 @@ export class GameOfLife {
     }
 
     //  TODO
-
-
 
     this.onDataUpdated();
   }
@@ -198,8 +198,8 @@ export class GameOfLife {
   /**
    * check if cell (row, col) is in the grid
    */
-  private isCellInTheGrid(row: number, col: number): boolean {
-    return row <= this.rowCount && col <= this.colCount;
+   isCellInTheGrid(row: number, col: number): boolean {
+    return row >= 0 && row < this.rowCount && col >= 0 && col < this.colCount;
   }
 
   /**
@@ -210,11 +210,12 @@ export class GameOfLife {
   }
 
 
-  private isDeadCell(row: number, col: number) {
+   isDeadCell(row: number, col: number) {
     return this.matrix[row][col] === CellState.DEAD;
   }
 
-  private isLiveCell(row: number, col: number) {
+   isLiveCell(row: number, col: number) {
+    // console.log(`is living cell ${row} : ${col}`);
     return this.matrix[row][col] === CellState.LIVE;
   }
 
