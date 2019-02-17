@@ -1,0 +1,26 @@
+.cell{
+  width: 10px;
+  height: 10px;
+  border: gray solid 1px;
+  padding: 2px;
+  text-align: center;
+}
+
+.grid{
+  padding: 10px;
+}
+
+.row{
+  display: flex;
+  flex-direction: row;
+}
+
+.col{
+  display: flex;
+  flex-direction: column;
+}
+
+.live{
+  background-color: black;
+}
+

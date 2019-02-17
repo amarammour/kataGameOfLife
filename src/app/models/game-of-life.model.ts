@@ -1,6 +1,5 @@
-import {Observable, Observer, Subject} from 'rxjs';
+import {Observer} from 'rxjs';
 import {CellState} from './cell-state';
-import {forEach} from '@angular/router/src/utils/collection';
 
 export class GameOfLife {
 
@@ -41,20 +40,12 @@ export class GameOfLife {
    * notify data updated
    */
   onDataUpdated() {
+
     if (this.observer) {
       this.observer.next(this.matrix);
+      console.log('updated');
     }
- //   this.display();
-  }
-
-  private display() {
-    this.matrix.forEach(
-      (row) => {
-        row.forEach((col) => {
-          console.log(col);
-        });
-      }
-    );
+    //   this.display();
   }
 
   /**
@@ -76,6 +67,7 @@ export class GameOfLife {
    * set cell(row,col) in live state
    */
   setCellLive(row: number, col: number): boolean {
+    console.log(`set cell live : ${row} : ${col}`);
     if (this.isCellInTheGrid(row, col)) {
       this.matrix[row][col] = CellState.LIVE;
       this.onDataUpdated();
@@ -83,6 +75,20 @@ export class GameOfLife {
     }
     return false;
   }
+
+  /**
+   * set cell(row,col) in live state
+   */
+  setCellState(row: number, col: number, state: CellState): boolean {
+    console.log(`set cell live : ${row} : ${col}`);
+    if (this.isCellInTheGrid(row, col)) {
+      this.matrix[row][col] = state;
+      this.onDataUpdated();
+      return true;
+    }
+    return false;
+  }
+
 
   /**
    * start running
@@ -136,12 +142,57 @@ export class GameOfLife {
    */
   private nextStep() {
     console.log('NEXT');
+
+    for (let row = 0; row < this.rowCount; row++) {
+      for (let col = 0; col < this.colCount; col++) {
+
+        //   1. Any live cell with fewer than two live neighbours dies, as if caused by underpopulation.
+        //    2. Any live cell with more than three live neighbours dies, as if by overcrowding.
+        //    3. Any live cell with two or three live neighbours lives on to the next generation.
+        const lNeighbours = this.cellLivingNeighbours(row, col);
+        if (this.isLiveCell(row, col) && (lNeighbours < 2 || lNeighbours > 3)) {
+          this.setCellState(row, col, CellState.DEAD);
+        }
+
+        //    4. Any dead cell with exactly three live neighbours becomes a live cell.
+        if (this.isDeadCell(row, col) && lNeighbours === 3) {
+          this.setCellState(row, col, CellState.LIVE);
+        }
+      }
+    }
+
     //  TODO
-    //   1. Any live cell with fewer than two live neighbours dies, as if caused by underpopulation.
-    //    2. Any live cell with more than three live neighbours dies, as if by overcrowding.
-    //    3. Any live cell with two or three live neighbours lives on to the next generation.
-    //    4. Any dead cell with exactly three live neighbours becomes a live cell.
+
+
+
     this.onDataUpdated();
+  }
+
+  /**
+   * Number of living neighbours cells
+   */
+  cellLivingNeighbours(row: number, col: number): number {
+    let living = 0;
+
+    const cellsToCkecks: [number, number][] = [
+      [row - 1, col - 1],
+      [row - 1, col],
+      [row - 1, col + 1],
+      [row, col + 1],
+      [row + 1, col + 1],
+      [row + 1, col],
+      [row + 1, col - 1],
+      [row, col - 1],
+    ];
+
+    for (const cell of cellsToCkecks) {
+      if (this.isCellInTheGrid(cell[0], cell[1]) && this.isLiveCell(cell[0], cell[1])) {
+        living++;
+      }
+    }
+
+
+    return living;
   }
 
   /**
